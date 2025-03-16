@@ -1,10 +1,8 @@
-from typing import Union
 
 from fastapi import FastAPI
 
+import routers
+
 app = FastAPI()
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+app.include_router(router=routers.router)
