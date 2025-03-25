@@ -109,7 +109,7 @@ class TestPodcastAPI:
         response = self.client.get(f"/api/v1/podcasts/{podcast_id}")
         assert response.status_code == 200
         data = response.json()
-        assert data["id"] == podcast_id
+        assert data["id"] == updated_podcast.id
         assert data["title"] == updated_podcast.title
         assert data["description"] == updated_podcast.description
         assert data["primary_feed_url"] == updated_podcast.primary_feed_url
