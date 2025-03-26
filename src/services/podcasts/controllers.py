@@ -7,7 +7,7 @@ from uuid import UUID
 from fastapi import HTTPException
 from sqlmodel import select
 
-from .models import Podcast
+from .models import Podcast, PodcastEpisode
 from .storage import SessionDependency
 
 
@@ -26,21 +26,12 @@ async def get_podcast(podcast_id: str, session: SessionDependency) -> Podcast:
     else:
         raise HTTPException(status_code=404, detail="Podcast not found")
     
-
-async def get_podcast_episodes(podcast_id):
-    # Logic to get podcast episodes
-    pass
-
 async def set_podcast(podcast: Podcast, session: SessionDependency) -> Podcast:
     # Logic to create a podcast
     session.add(podcast)
     session.commit()
     session.refresh(podcast)
     return podcast
-
-async def create_podcast_episode(podcast_id, episode_data):
-    # Logic to create a podcast episode
-    pass
 
 async def update_podcast(podcast: Podcast, session: SessionDependency) -> Podcast:
     # Logic to update a podcast
@@ -57,11 +48,7 @@ async def update_podcast(podcast: Podcast, session: SessionDependency) -> Podcas
             session.refresh(persisted_podcast)
             return persisted_podcast
 
-async def update_podcast_episode(podcast_id, episode_id, episode_data):
-    # Logic to update a podcast episode
-    pass
-
-async def delete_podcast(podcast_id: str, session: SessionDependency) -> UUID:
+async def delete_podcast(podcast_id: str, session: SessionDependency) -> str:
     # Logic to delete a podcast
     if podcast_id is None:
         raise HTTPException(status_code=400, detail="Podcast ID is required")
@@ -69,11 +56,77 @@ async def delete_podcast(podcast_id: str, session: SessionDependency) -> UUID:
         podcast = session.get(Podcast, podcast_id)
         if podcast is None:
             raise HTTPException(status_code=404, detail=f"Podcast not found with id {podcast_id}")
+        elif podcast.episodes:
+            raise HTTPException(status_code=400, detail="Cannot delete podcast with existing episodes")
         else:
             session.delete(podcast)
             session.commit()
             return podcast_id
 
-async def delete_podcast_episode(podcast_id, episode_id):
-    # Logic to delete a podcast episode
-    pass
+async def get_podcast_episodes(podcast_id: str, session: SessionDependency) -> List:
+    podcast: Podcast = session.get(Podcast, podcast_id)
+    if podcast is None:
+        raise HTTPException(status_code=404, detail=f"Podcast not found with id {podcast_id}")
+    return podcast.episodes if podcast.episodes else []
+
+async def get_podcast_episode(podcast_id:str, episode_id: str, session: SessionDependency):
+    podcast_episode = session.get(PodcastEpisode, episode_id)
+    if podcast_episode is None:
+        raise HTTPException(status_code=404, detail=f"Podcast episode not found with id {episode_id}")
+    if podcast_episode.podcast_id != podcast_id:
+        raise HTTPException(status_code=404, detail=f"Podcast episode {episode_id} does not belong to podcast {podcast_id}")
+    return podcast_episode
+
+async def set_podcast_episode(podcast_id: str, episode: PodcastEpisode, session: SessionDependency) -> PodcastEpisode:
+    podcast = session.get(Podcast, podcast_id)
+    if podcast is None:
+        raise HTTPException(status_code=404, detail=f"Podcast not found with id {podcast_id}")
+    episode.podcast_id = podcast_id
+    session.add(episode)
+    session.commit()
+    session.refresh(episode)
+    return episode
+
+async def update_podcast_episode(podcast_id: str, episode_id:str, episode: PodcastEpisode, session: SessionDependency) -> PodcastEpisode:
+    podcast = session.get(Podcast, podcast_id)
+    if podcast is None:
+        raise HTTPException(status_code=404, detail=f"Podcast not found with id {podcast_id}")
+    podcast_episode = session.get(PodcastEpisode, episode_id)
+    if podcast_episode is None:
+        raise HTTPException(status_code=404, detail=f"Podcast episode not found with id {episode_id}")
+    if podcast_episode.podcast_id != podcast_id:
+        raise HTTPException(status_code=404, detail=f"Podcast episode {episode_id} does not belong to podcast {podcast_id}")
+    if podcast_episode.id != episode_id:
+        raise HTTPException(status_code=400, detail="Episode ID in URL does not match the episode ID in the request body")
+    
+    # Update the episode attributes
+    podcast_episode.sqlmodel_update(episode)
+    session.add(podcast_episode)
+    session.commit()
+    session.refresh(podcast_episode)
+    return podcast_episode
+
+async def delete_podcast_episodes(podcast_id: str, session: SessionDependency) -> str:
+    podcast = session.get(Podcast, podcast_id)
+    if podcast is None:
+        raise HTTPException(status_code=404, detail=f"Podcast not found with id {podcast_id}")
+    
+    for episode in podcast.episodes:
+        delete_podcast_episode(podcast_id, episode.id, session)
+    return podcast_id
+
+async def delete_podcast_episode(podcast_id: str, episode_id: str, session: SessionDependency) -> str:
+    podcast = session.get(Podcast, podcast_id)
+    if podcast is None:
+        raise HTTPException(status_code=404, detail=f"Podcast not found with id {podcast_id}")
+    
+    podcast_episode = session.get(PodcastEpisode, episode_id)
+    if podcast_episode is None:
+        raise HTTPException(status_code=404, detail=f"Podcast episode not found with id {episode_id}")
+    
+    if podcast_episode.podcast_id != podcast_id:
+        raise HTTPException(status_code=404, detail=f"Podcast episode {episode_id} does not belong to podcast {podcast_id}")
+    
+    session.delete(podcast_episode)
+    session.commit()
+    return episode_id

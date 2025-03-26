@@ -3,9 +3,9 @@
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
 import uuid
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
 def generate_uuid():
     """Generate a new UUID."""
@@ -13,6 +13,32 @@ def generate_uuid():
 
 class BaseModel:
     id: str = Field(primary_key=True, max_length=36, default_factory=generate_uuid, description="Unique identifier for the record")
+
+class PodcastEpisode(BaseModel, SQLModel, table=True):
+    title: str = Field(
+        description="The title of the episode",
+    )
+    description: Optional[str] = Field(
+        default=None,
+        description="A description of the episode",
+    )
+    audio_url: str = Field(
+        index=True,
+        description="The URL of the audio file",
+    )
+    podcast_id: str = Field(
+        foreign_key="podcast.id",
+        description="The ID of the podcast this episode belongs to",
+    )
+    podcast: "Podcast" = Relationship(back_populates="episodes")
+    archived: bool = Field(
+        default=False,
+        description="Whether the episode is archived",
+    )
+    published_on: Optional[datetime] = Field( # type: ignore
+        default=None,
+        description="The date the episode was published",
+    )
 
 class Podcast(BaseModel, SQLModel, table=True):
     title: str = Field(
@@ -35,31 +61,7 @@ class Podcast(BaseModel, SQLModel, table=True):
         default="",
         description="The secondary feed URL of the podcast",
     )
-
-class PodcastEpisode(BaseModel, SQLModel, table=True):
-    title: str = Field(
-        description="The title of the episode",
-    )
-    description: Optional[str] = Field(
-        default=None,
-        description="A description of the episode",
-    )
-    audio_url: str = Field(
-        index=True,
-        description="The URL of the audio file",
-    )
-    podcast_id: str = Field(
-        foreign_key="podcast.id",
-        description="The ID of the podcast this episode belongs to",
-    )
-    archived: bool = Field(
-        default=False,
-        description="Whether the episode is archived",
-    )
-    published_on: Optional[datetime] = Field( # type: ignore
-        default=None,
-        description="The date the episode was published",
-    )
+    episodes: List[PodcastEpisode] = Relationship(back_populates="podcast", sa_relationship_kwargs={"lazy": "selectin"})
     
 class TaskStatus(str, Enum):
     PENDING = "pending"

@@ -5,6 +5,7 @@ from fastapi import APIRouter
 
 from .controllers import (
     delete_podcast,
+    delete_podcast_episodes,
     get_podcast,
     get_podcasts,
     root,
@@ -38,9 +39,14 @@ router.add_api_route(
     "/podcasts",
     update_podcast,
     methods=["PUT"],
-) 
+)
 router.add_api_route(
     "/podcasts/{podcast_id}",
     delete_podcast,
     methods=["DELETE"],
-) 
+)
+router.add_api_route(
+    "/podcasts/{podcast_id}/episodes",
+    delete_podcast_episodes, 
+    methods=["DELETE"],
+)
