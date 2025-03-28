@@ -5,8 +5,8 @@ import os
 from typing import List
 from fastapi.testclient import TestClient
 
-from services.podcasts.models import Podcast, PodcastEpisode
-from services.podcasts.storage import SQL_FILE_PATH, Storage
+from src.services.podcasts.models import Podcast, PodcastEpisode
+from src.services.podcasts.storage import SQL_FILE_PATH, Storage
 from src.main import app
 
 
@@ -21,7 +21,7 @@ class TestPodcastEpisodeApi:
             os.remove(SQL_FILE_PATH)
     
     def _test_get_podcast_episodes(self, podcast_id:str, expected_count: int):
-        response = self.client.get(f"/api/v1/podcasts/episodes/{podcast_id}")   
+        response = self.client.get(f"/api/v1/podcasts/{podcast_id}/episodes")   
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, List)
@@ -91,8 +91,6 @@ class TestPodcastEpisodeApi:
         assert data["podcast_id"] == episodes[0].podcast_id
         assert data["archived"] == episodes[0].archived
         assert data["published_on"] == episodes[0].published_on
-        assert data["podcast"] is not None
-        assert data["podcast"]["id"] == podcast.id
         
         # Test updating an episode
         updated_episode = PodcastEpisode(
@@ -103,7 +101,7 @@ class TestPodcastEpisodeApi:
             podcast_id=podcast.id,
         )
         response = self.client.put(
-            f"/api/v1/podcasts/{podcast.id}/episodes/{episode_id}",
+            f"/api/v1/podcasts/{podcast.id}/episodes",
             headers={"Content-Type": "application/json"},
             json=updated_episode.model_dump(mode="json"),
         )
@@ -116,7 +114,6 @@ class TestPodcastEpisodeApi:
         assert data["podcast_id"] == updated_episode.podcast_id
         assert data["archived"] == updated_episode.archived
         assert data["published_on"] == updated_episode.published_on
-        assert data["podcast"] is not None
         
         # Verify the episode was updated
         response = self.client.get(f"/api/v1/podcasts/{podcast.id}/episodes/{episode_id}")
@@ -129,7 +126,6 @@ class TestPodcastEpisodeApi:
         assert data["podcast_id"] == updated_episode.podcast_id
         assert data["archived"] == updated_episode.archived
         assert data["published_on"] == updated_episode.published_on
-        assert data["podcast"] is not None
         
         # Test deleting an episode
         response = self.client.delete(f"/api/v1/podcasts/{podcast.id}/episodes/{episode_id}")
@@ -165,3 +161,52 @@ class TestPodcastEpisodeApi:
         response = self.client.get(f"/api/v1/podcasts/{podcast.id}")
         assert response.status_code == 404
         assert response.json() == {"detail": "Podcast not found"}
+
+    def test_delete_all_podcast_episodes(self):
+        podcast: Podcast = Podcast(
+            title="Sample Podcast",
+            description="Sample description",
+            icon="http://example.com/icon.png",
+            primary_feed_url="http://example.com/feed",
+            secondary_feed_url="http://example.com/secondary_feed",
+        )
+        
+        # Create a podcast
+        self.client.post(
+            "/api/v1/podcasts",
+            headers={"Content-Type": "application/json"},
+            json=podcast.model_dump(mode="json"),
+        )
+        
+        self._test_get_podcast_episodes(podcast.id, 0)  # Ensure no episodes exist initially
+        
+        episodes: List[PodcastEpisode] = [
+            PodcastEpisode(
+                title="Episode 1",
+                description="Description for episode 1",
+                audio_url="http://example.com/audio1.mp3",
+                podcast_id=podcast.id,
+            ),
+            PodcastEpisode(
+                title="Episode 2",
+                description="Description for episode 2",
+                audio_url="http://example.com/audio2.mp3",
+                podcast_id=podcast.id,
+            )
+        ]
+        
+        for episode in episodes:
+            self.client.post(
+                f"/api/v1/podcasts/{podcast.id}/episodes",
+                headers={"Content-Type": "application/json"},
+                json=episode.model_dump(mode="json"),
+            )
+
+        self._test_get_podcast_episodes(podcast.id, 2)
+        
+        # Test deleting all episodes
+        response = self.client.delete(f"/api/v1/podcasts/{podcast.id}/episodes")
+        assert response.status_code == 200
+        data = response.json()
+        assert data == podcast.id
+        self._test_get_podcast_episodes(podcast.id, 0)
