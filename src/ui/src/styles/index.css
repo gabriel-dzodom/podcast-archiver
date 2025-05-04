@@ -6,7 +6,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: rgb(36, 36, 36);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -16,8 +16,8 @@
 
 .demo-logo-vertical {
   display: flex;
-  flex-direction: column;
-  color: black;
+  flex-direction:row;
+  color: white;
   text-align: center;
 }
 

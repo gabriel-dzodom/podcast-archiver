@@ -1,6 +1,7 @@
 import React from 'react';
 import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Layout, Menu, } from 'antd';
+import { Home } from './components/home';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -14,11 +15,10 @@ const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].
 
 const App: React.FC = () => {
   return (
-    <Layout style={{ minHeight: '100vh', minWidth: '60vw', borderRight: '1px solid #f0f0f0', borderLeft: '1px solid #f0f0f0'}} className='layout-dark'>
-      <Sider style={{borderRight:'1px solid #f0f0f0'}} className='layout-dark'>
-        <h2 className='demo-logo-vertical'>Pod</h2>
-        <h4 className='demo-logo-vertical'>Archiver</h4>
-        <Menu defaultSelectedKeys={['4']} items={items} style={{borderRight:'none'}} className='layout-dark' />
+    <Layout style={{ minHeight: '100vh', minWidth: '60vw'}} className='layout-dark'>
+      <Sider style={{borderRight:'1px solid rgba(240, 240, 240, 0.50)'}} width={224} className='layout-dark'>
+        <Home />
+        <Menu defaultSelectedKeys={['4']} items={items} style={{borderRight:'none', borderRadius: 'none'}} className='layout-dark' />
       </Sider>
       <Layout style={{ }} className='layout-dark'>
         <Header style={{ height:'128px'}} className='layout-dark' />
@@ -27,7 +27,7 @@ const App: React.FC = () => {
             content
           </div>
         </Content>
-        <Footer style={{ height: '32px', textAlign: 'center', borderTop:'1px solid #f0f0f0', fontSize:'12px', padding:'8px 24px'}} className='layout-dark'>
+        <Footer style={{ height: '32px', textAlign: 'center',fontSize:'12px', padding:'8px 24px'}} className='layout-dark'>
           Pod Archiver © {new Date().getFullYear()} Created by Gabriel Dzodom
         </Footer>
       </Layout>
