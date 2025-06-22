@@ -40,24 +40,26 @@
 }
 
 .ant-menu-item {
-background-color: rgb(24, 24, 24) !important;
-color: white !important;
-font-size: 1.08em !important;
-}
+  background-color: rgb(24, 24, 24) !important;
+  color: white !important;
+  font-size: 1.08em !important;
+  align-items: center !important;
+  display: flex !important;
 
+}
 .ant-menu-item-selected  {
-border-radius: 0 !important;
-width: auto !important;
-margin: 0 !important;
-background-color: white !important;  
-color: rgb(24, 24, 24) !important;
-font-weight: bold !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  margin: 0 !important;
+  background-color: white !important;  
+  color: rgb(24, 24, 24) !important;
+  font-weight: bold !important;
 }
 .ant-menu-item-active  {
-border-radius: 0 !important;
-width: auto !important;
-margin: 0 !important;
-background-color: white !important;  
-color: rgb(24, 24, 24) !important;
-font-weight: bold !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  margin: 0 !important;
+  background-color: white !important;  
+  color: rgb(24, 24, 24) !important;
+  font-weight: bold !important;
 }

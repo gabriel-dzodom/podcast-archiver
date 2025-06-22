@@ -1,0 +1,10 @@
+export const FETCH_PODCASTS = 'FETCH_PODCASTS';
+export const ADD_PODCAST = 'ADD_PODCAST';
+export const UPDATE_PODCAST = 'UPDATE_PODCAST';
+export const DELETE_PODCAST = 'DELETE_PODCAST';
+export const SELECT_PODCAST = 'SELECT_PODCAST';
+export const SELECT_EPISODE = 'SELECT_EPISODE';
+export const FETCH_NEW_EPISODES = 'FETCH_NEW_EPISODES';
+export const SET_LOADING = 'SET_LOADING';
+export const SET_ERROR = 'SET_ERROR';
+

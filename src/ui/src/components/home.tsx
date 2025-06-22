@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 const style = {
     display: 'flex',
@@ -9,11 +10,11 @@ const style = {
       
 export const Home = () => {
     return (
-        <a href="#">
+        <Link to="/" style={{ textDecoration: 'none' }}>
             <div style={style}>
                 <img src='/pa.svg' width={32} height={32} alt='logo' />
                 <h2>POD ARCHIVER</h2>
             </div>
-        </a>
+        </Link>
     );
 }
