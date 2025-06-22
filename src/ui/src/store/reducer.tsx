@@ -18,11 +18,13 @@ export default function podcastReducer(state = initialState, action: PodcastActi
                 ...state,
                 podcasts: PodcastApiClient.getPodcasts(),
             };
-        case ActionTypes.SELECT_PODCAST:
+        case ActionTypes.SELECT_PODCAST: {
+            const selectedPodcast = state.podcasts.find(p => p.id === (action.payload as string));
             return {
                 ...state,
-                selectedPodcast: action.payload as Podcast,
+                selectedPodcast: selectedPodcast as Podcast,
             };
+        }
         case ActionTypes.SELECT_EPISODE:
             return {
                 ...state,

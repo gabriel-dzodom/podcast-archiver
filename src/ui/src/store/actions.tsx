@@ -10,3 +10,13 @@ export function fetchPodcasts() {
         dispatch(action);
     };
 }
+
+export function selectPodcast(podcastId : string) {
+    const action: PodcastAction = {
+        type: ActionTypes.SELECT_PODCAST,
+        payload: podcastId,
+    };
+    return (dispatch: PodcastDispatch) => {
+        dispatch(action);
+    };
+}

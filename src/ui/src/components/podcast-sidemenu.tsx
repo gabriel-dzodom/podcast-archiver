@@ -1,8 +1,9 @@
 import { Menu } from 'antd';
-import React from 'react';
-import { Podcast, PodcastState } from '../models/podcast';
+import { Podcast } from '../models/podcast';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Dispatch } from 'redux';
+import { useDispatch } from 'react-redux';
+import { selectPodcast } from '../store/actions';
 
 
 export const PodcastIcon = (podcast: Podcast) => {
@@ -20,20 +21,37 @@ const formatPodcastTitle = (_title: string) => {
     return title.toUpperCase();
 }
 
+type SideMenuProps = {
+    podcasts: readonly Podcast[];
+    selectedPodcast: Podcast | null;
+}
 
-export const PodcastSideMenu: React.FC = () => {    
-    const podcasts: readonly Podcast[] = useSelector((state: PodcastState) => state.podcasts);
+export const PodcastSideMenu: React.FC<SideMenuProps> = ({podcasts, selectedPodcast}) => {    
+    // const podcasts: readonly Podcast[] = useSelector((state: PodcastState) => state.podcasts);
     const items = podcasts.map(
         (podcast) => ({
-          key: podcast.id,
-          icon: PodcastIcon(podcast),
-          label: formatPodcastTitle(podcast.title),
-          title: podcast.title.toUpperCase(),
-          extra: <Link to={`/podcast`} style={{ textDecoration: 'none' }} />
+            key: podcast.id,
+            icon: PodcastIcon(podcast),
+            label: formatPodcastTitle(podcast.title),
+            title: podcast.title.toUpperCase(),
+            extra: <Link to={`/podcast`} style={{ textDecoration: 'none' }} />
         }),
-      );
+    );
+
+    const selectedkeys = selectedPodcast ? [selectedPodcast.id] : [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const dispatch : Dispatch<any> = useDispatch();
+    const onPodcastSelected = (e: { key: string }) => {
+        dispatch(selectPodcast(e.key));
+    };
     
     return (
-        <Menu items={items} style={{borderRight:'none', borderRadius: 'none'}} className='layout-dark' />
+        <Menu
+            items={items}
+            selectedKeys={selectedkeys}
+            style={{borderRight:'none', borderRadius: 'none'}}
+            className='layout-dark'
+            onSelect={onPodcastSelected}
+        />
     );
 }
