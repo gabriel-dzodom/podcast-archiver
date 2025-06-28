@@ -39,6 +39,41 @@
   color: white;
 }
 
+.podcasts-header {
+  font-size: 2.2em;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.podcast-card {
+  background-color: rgb(24, 24, 24);
+  color: white;
+  border-radius: 0;
+  border: 1px solid rgba(240, 240, 240, 0.5);
+}
+
+.podcast-card:hover {
+  background-color: rgb(24, 24, 24);
+  color: white;
+  border-radius: 0;
+  border: 4px solid rgba(240, 240, 240, 0.8);
+}
+
+.ant-card-body {
+  padding: 12px !important;
+}
+
+.ant-card-meta-title {
+  color: white !important;
+}
+
+.ant-card-meta-description {
+  color: white !important;
+}
+
 .ant-menu-item {
   background-color: rgb(24, 24, 24) !important;
   color: white !important;

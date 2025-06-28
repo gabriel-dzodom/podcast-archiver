@@ -24,7 +24,7 @@ const App: React.FC = () => {
         </Sider>
         <Layout className='layout-dark'>
           <Routes>
-            <Route path="/" element={<PodcastsPage />} />
+            <Route path="/" element={<PodcastsPage podcasts={podcasts} />} />
             <Route path="/podcast" element={<PodcastPage podcast={selectedPodcast} />} />
           </Routes>
           <Footer style={{ height: '32px', textAlign: 'center',fontSize:'12px', padding:'8px 24px'}} className='layout-dark'>

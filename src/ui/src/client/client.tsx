@@ -8,7 +8,7 @@ class PodcastApiClientClass {
         for (let i = 0; i < 10; i++) {
             podcasts.push({
                 id: `${i}`,
-                title: `Podcast ${i}`,
+                title: `The Black Myth Podcast ${i}`,
                 description: `Description ${i}`,
                 icon: `./pa.svg`,
                 primary_feed_url: `https://example.com/podcast${i}.xml`,
@@ -20,7 +20,7 @@ class PodcastApiClientClass {
                         description: `Description ${i}`,
                         audio_url: `https://example.com/episode${i}.1.mp3`,
                         podcast_id: `${i}`,
-                        archived: false,
+                        archived: true,
                         published_on: new Date()
                     },
                     {
