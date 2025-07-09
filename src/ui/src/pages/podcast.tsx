@@ -1,6 +1,5 @@
 import { Layout } from "antd";
 import { Podcast } from "../models/podcast";
-import { Navigate } from "react-router-dom";
 
 const { Header, Content } = Layout;
 
@@ -12,7 +11,8 @@ type PodcastPageProps = {
 export const PodcastPage: React.FC<PodcastPageProps> = ({podcast}) => {
     // If no podcast is selected, redirect
     if (!podcast) {
-        return <Navigate to="/" replace />;
+        // do something else
+        // return <Navigate to="/" replace />;
     }
     return (
         <>

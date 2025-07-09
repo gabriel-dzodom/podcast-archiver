@@ -7,6 +7,8 @@ import { PodcastsPage } from './pages/podcasts';
 import { PodcastPage } from './pages/podcast';
 import { useSelector } from 'react-redux';
 import { Podcast, PodcastState } from './models/podcast';
+import { NewPodcastPage } from './pages/podcast-new';
+import { NewPodcastButton } from './components/new-podcast-button';
 
 const { Footer, Sider } = Layout;
 
@@ -21,11 +23,13 @@ const App: React.FC = () => {
         <Sider style={{borderRight:'1px solid rgba(240, 240, 240, 0.50)'}} width={224} className='layout-dark'>
           <Home />
           <PodcastSideMenu podcasts={podcasts} selectedPodcast={selectedPodcast} />
+          <NewPodcastButton />
         </Sider>
         <Layout className='layout-dark'>
           <Routes>
             <Route path="/" element={<PodcastsPage podcasts={podcasts} />} />
             <Route path="/podcast" element={<PodcastPage podcast={selectedPodcast} />} />
+            <Route path="/podcast/new" element={<NewPodcastPage />} />
           </Routes>
           <Footer style={{ height: '32px', textAlign: 'center',fontSize:'12px', padding:'8px 24px'}} className='layout-dark'>
             Pod Archiver © {new Date().getFullYear()} Created by Gabriel Dzodom

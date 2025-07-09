@@ -10,7 +10,7 @@ class PodcastApiClientClass {
                 id: `${i}`,
                 title: `The Black Myth Podcast ${i}`,
                 description: `Description ${i}`,
-                icon: `./pa.svg`,
+                icon: `/pa.svg`,
                 primary_feed_url: `https://example.com/podcast${i}.xml`,
                 secondary_feed_url: `https://example.com/podcast${i}.xml`,
                 episodes: [
