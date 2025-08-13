@@ -37,6 +37,38 @@ class PodcastApiClientClass {
         }
         return podcasts;        
     }
+
+    findPodcasts = (searchTerm: string): Array<Podcast> => {
+        const podcasts = new Array<Podcast>();
+        const titles = [
+            'Chapo Trap House',
+            'Citations Needed',
+            'Hood Communists',
+            'TrueAnon',
+            'Guerrilla History',
+            'Rev Left Radio',
+            'Blowback',
+            'The Black Myth Podcast',
+        ];
+
+        for (let i = 0; i < titles.length; i++) {
+            podcasts.push({
+                id: `${i}`,
+                title: titles[i],
+                description: `${titles[i]}`,
+                icon: `/pa.svg`,
+                primary_feed_url: `https://example.com/podcast${i}.xml`,
+                secondary_feed_url: `https://example.com/podcast${i}.xml`,
+                episodes: []
+            });
+        }
+
+        if (!searchTerm) {
+            return new Array<Podcast>();
+        }
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return podcasts.filter(p => p.title.toLowerCase().includes(lowerSearchTerm) || p.description.toLowerCase().includes(lowerSearchTerm));
+    }
 }
 
 const PodcastApiClient = new PodcastApiClientClass();
